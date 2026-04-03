@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import ZonesList from './ZonesList';
 import './FileUploadModern.css';
 
-const FileUploadModern = () => {
+const FileUploadModern = ({ onLogout }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -83,6 +83,10 @@ const FileUploadModern = () => {
       setSyncing(true);
       setTimeout(() => setSyncing(false), 3000);
     } catch (err) {
+      if (err.status === 401 && onLogout) {
+        onLogout();
+        return;
+      }
       setError(err.message || 'Error al cargar el archivo');
     } finally {
       setLoading(false);
@@ -99,6 +103,15 @@ const FileUploadModern = () => {
       <header className="header">
         <nav className="nav">
           <div className="logo">Plataforma Territorial</div>
+          {onLogout ? (
+            <button
+              type="button"
+              className="link-button"
+              onClick={onLogout}
+            >
+              Cerrar sesión
+            </button>
+          ) : null}
         </nav>
       </header>
 

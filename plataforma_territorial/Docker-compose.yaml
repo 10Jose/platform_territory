@@ -79,6 +79,18 @@ services:
     volumes:
       - pgdata-audit:/var/lib/postgresql/data
 
+  # PostgreSQL para el BFF (usuarios / JWT)
+  db-auth:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+      POSTGRES_DB: auth_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - pgdata-auth:/var/lib/postgresql/data
+
   # ==================== MICROSERVICIOS ====================
 
   ms-ingestion:
@@ -159,6 +171,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      AUTH_DATABASE_URL: postgresql+asyncpg://auth_user:auth_pass@db-auth:5432/auth_db
       INGESTION_SERVICE_URL: http://ms-ingestion:8000
       TRANSFORMATION_SERVICE_URL: http://ms-transformation:8000
       ANALYTICS_SERVICE_URL: http://ms-analytics:8000
@@ -167,6 +180,7 @@ services:
       CONFIGURATION_SERVICE_URL: http://ms-configuration:8000
       AUDIT_SERVICE_URL: http://ms-audit:8000
     depends_on:
+      - db-auth
       - ms-ingestion
       - ms-transformation
       - ms-analytics
@@ -184,3 +198,4 @@ volumes:
   pgdata-recommendations:
   pgdata-configuration:
   pgdata-audit:
+  pgdata-auth:

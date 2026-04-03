@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, EmailStr
 from app.infrastructure.database import get_db
-from app.services.user_service import UserService
+from app.services.user_services import UserService
 from app.core.security import create_access_token, decode_token
 from app.domain.models import User
 

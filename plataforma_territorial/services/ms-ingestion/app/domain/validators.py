@@ -6,7 +6,7 @@ VALIDATION_RULES_VERSION = "1.0.0"
 
 def convert_education_to_years(value):
     """Convertir texto a años."""
-    if value is None or pd.isna(value)):
+    if value is None or pd.isna(value):
         return None
 
     try:

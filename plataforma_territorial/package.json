@@ -1,0 +1,10 @@
+{
+  "name": "plataforma-territorial",
+  "private": true,
+  "description": "El frontend React vive en la carpeta fronted. Los scripts delegan allí.",
+  "scripts": {
+    "postinstall": "npm install --prefix fronted",
+    "start": "npm start --prefix fronted",
+    "build": "npm run build --prefix fronted"
+  }
+}

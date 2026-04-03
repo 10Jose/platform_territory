@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from app.routers import load
-from app.routers import zones, indicators, ranking, recommendations
+from app.routers import auth, load, zones
+from app.infrastructure.database import engine, Base
+from app.domain import models
+import httpx
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="BFF - Plataforma de Analítica Territorial")
 
@@ -13,12 +19,50 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(load.router, prefix="/api/load", tags=["Load"])
 app.include_router(zones.router, prefix="/api/zones", tags=["Zones"])
-app.include_router(indicators.router, prefix="/api/indicators", tags=["Indicators"])
-app.include_router(ranking.router, prefix="/api/ranking", tags=["Ranking"])
-app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
+
+
+@app.on_event("startup")
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 
 @app.get("/health")
-def health():
-    return {"status": "ok"}
+async def health():
+    status = {"status": "ok", "services": {}}
+    services = {
+        "ingestion": os.getenv("INGESTION_SERVICE_URL", "http://ms-ingestion:8000"),
+        "transformation": os.getenv("TRANSFORMATION_SERVICE_URL", "http://ms-transformation:8000"),
+    }
+    for name, url in services.items():
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(f"{url}/health", timeout=5.0)
+                if response.status_code == 200:
+                    status["services"][name] = "connected"
+                else:
+                    status["services"][name] = "unhealthy"
+                    status["status"] = "degraded"
+        except Exception:
+            status["services"][name] = "disconnected"
+            status["status"] = "degraded"
+    return status
+
+
+@app.get("/")
+async def root():
+    return {
+        "message": "BFF - Plataforma Analítica Territorial",
+        "docs": "/docs",
+        "endpoints": {
+            "health": "/health",
+            "auth_register": "/api/auth/register (POST)",
+            "auth_token": "/api/auth/token (POST)",
+            "auth_me": "/api/auth/me (GET)",
+            "load": "/api/load (POST)",
+            "zones": "/api/zones",
+        }
+    }

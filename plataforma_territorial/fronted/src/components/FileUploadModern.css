@@ -1,14 +1,9 @@
-/* FileUploadModern.css */
-
-/* Variables de color (igual que el diseño original) */
+/* ===== Variables ===== */
 :root {
   --primary: #006944;
   --primary-light: #3efdad;
   --primary-dim: #005c3a;
-  --secondary: #006851;
-  --secondary-container: #5ffcce;
   --surface: #f5f6f7;
-  --surface-container: #e6e8ea;
   --surface-container-low: #eff1f2;
   --surface-container-lowest: #ffffff;
   --on-surface: #2c2f30;
@@ -19,29 +14,17 @@
   --error-dark: #721c24;
   --success-light: #d4edda;
   --success-dark: #155724;
-  --slate-400: #94a3b8;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
-  background-color: var(--surface);
-  color: var(--on-surface);
-}
-
-/* Layout */
+/* ===== Layout ===== */
 .min-h-screen {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--surface);
+  font-family: 'Manrope', sans-serif;
 }
 
-/* Header */
 .header {
   width: 100%;
   position: sticky;
@@ -66,25 +49,6 @@ body {
   letter-spacing: -0.025em;
 }
 
-.icon-button {
-  padding: 0.5rem;
-  border-radius: 9999px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.icon-button:hover {
-  background-color: var(--surface-container);
-}
-
-.material-symbols-outlined {
-  font-size: 24px;
-  color: var(--primary);
-}
-
-/* Main content */
 .main-content {
   flex: 1;
   display: flex;
@@ -103,7 +67,7 @@ body {
   gap: 3rem;
 }
 
-/* Hero */
+/* ===== Hero ===== */
 .hero h1 {
   font-size: 2.75rem;
   font-weight: 800;
@@ -119,7 +83,7 @@ body {
   margin: 0 auto;
 }
 
-/* Upload Zone */
+/* ===== Upload Zone ===== */
 .upload-zone {
   position: relative;
   background: var(--surface-container-lowest);
@@ -127,7 +91,7 @@ body {
   padding: 4rem;
   border: 4px solid transparent;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
 }
 
@@ -151,7 +115,7 @@ body {
   width: 6rem;
   height: 6rem;
   border-radius: 9999px;
-  background-color: var(--surface-container);
+  background-color: #e6e8ea;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,13 +140,6 @@ body {
 .upload-subtext {
   color: var(--on-surface-variant);
   font-size: 0.875rem;
-}
-
-.file-name {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--primary);
-  margin-top: 0.5rem;
 }
 
 .primary-button {
@@ -236,7 +193,23 @@ body {
   cursor: not-allowed;
 }
 
-/* Meta Info */
+.hidden-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+/* ===== Meta Info ===== */
 .meta-info {
   display: flex;
   align-items: center;
@@ -247,7 +220,7 @@ body {
 
 .badge {
   padding: 0.25rem 1rem;
-  background-color: var(--secondary-container);
+  background-color: #5ffcce;
   color: #005d48;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -266,14 +239,15 @@ body {
   font-size: 0.875rem;
 }
 
-/* Messages */
+/* ===== Messages ===== */
 .error-message {
   margin-top: 1.5rem;
   padding: 1rem;
   background-color: var(--error-light);
   color: var(--error-dark);
   border-radius: 0.75rem;
-  border: 1px solid #f5c6cb;
+  border-left: 4px solid var(--error);
+  text-align: left;
 }
 
 .success-message {
@@ -282,7 +256,7 @@ body {
   background-color: var(--success-light);
   color: var(--success-dark);
   border-radius: 0.75rem;
-  border: 1px solid #c3e6cb;
+  border-left: 4px solid var(--primary);
   text-align: left;
 }
 
@@ -291,16 +265,181 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.success-message pre {
-  background-color: white;
+.syncing-message {
+  margin-top: 1rem;
   padding: 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  white-space: pre-wrap;
-  word-break: break-word;
+  background-color: #e8f5e9;
+  color: var(--primary);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
 }
 
-/* Background decorations */
+/* ===== Error Details ===== */
+.error-summary {
+  margin-top: 1rem;
+  border-top: 1px solid #c3e6cb;
+  padding-top: 1rem;
+}
+
+.error-summary details summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.error-container {
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.error-item {
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.error-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.error-list {
+  margin: 0 0 0.5rem 1.5rem;
+  padding: 0;
+}
+
+.error-list li {
+  color: #856404;
+  margin-bottom: 0.25rem;
+}
+
+.error-data-summary {
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+}
+
+.error-data-pre {
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.json-summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #155724;
+}
+
+.json-pre {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+}
+
+/* ===== Zones Section ===== */
+.zones-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.zones-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.zones-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--on-surface);
+}
+
+.refresh-button {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.refresh-button:hover {
+  background: var(--primary-dim);
+}
+
+.refresh-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.zones-loading, .zones-empty, .zones-error {
+  text-align: center;
+  padding: 1rem;
+  color: var(--on-surface-variant);
+}
+
+.zones-error {
+  color: var(--error-dark);
+  background-color: var(--error-light);
+  border-radius: 4px;
+}
+
+.zones-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.zone-item {
+  background: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.zone-item:hover {
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.zone-code {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+  margin-left: 0.25rem;
+}
+
+/* ===== Background Decorations ===== */
 .bg-decoration {
   position: fixed;
   bottom: -6rem;
@@ -325,7 +464,7 @@ body {
   z-index: -10;
 }
 
-/* Footer */
+/* ===== Footer ===== */
 .footer {
   width: 100%;
   padding: 3rem 2.5rem;
@@ -349,7 +488,7 @@ body {
 }
 
 .copyright {
-  color: var(--slate-400);
+  color: #94a3b8;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -368,7 +507,7 @@ body {
   padding: 0;
   margin: 0;
   font: inherit;
-  color: var(--slate-400);
+  color: #94a3b8;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -376,20 +515,4 @@ body {
 
 .link-button:hover {
   color: var(--primary);
-}
-
-.hidden-input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.mt-6 {
-  margin-top: 1.5rem;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
 }

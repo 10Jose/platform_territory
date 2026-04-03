@@ -52,6 +52,7 @@ async def load_dataset(
 
     try:
         async with asyncio.timeout(TIMEOUT_SECONDS):
+            # ========== HU-01: VALIDACIONES INICIALES ==========
             if not file.filename.lower().endswith('.csv'):
                 raise HTTPException(400, detail="Formato de archivo no válido. Solo se permiten archivos CSV.")
 
@@ -100,7 +101,7 @@ async def load_dataset(
             if len(df) > MAX_ROWS:
                 raise HTTPException(413, detail=f"El archivo excede el límite de {MAX_ROWS} filas")
 
-            # validamos datos
+            # validacion de datos
             try:
                 valid_rows, invalid_rows, errors, rules_version = validate_dataset(df)
             except ValueError as e:
@@ -124,7 +125,6 @@ async def load_dataset(
             }
             metadata_clean = clean_nan(metadata)
             errors_clean = clean_nan(errors)
-
             upload_dir = "/app/uploads"
             os.makedirs(upload_dir, mode=0o750, exist_ok=True)
 

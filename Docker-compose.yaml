@@ -1,0 +1,310 @@
+services:
+  # ==================== BASES DE DATOS ====================
+
+  db-ingestion:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ingestion_user
+      POSTGRES_PASSWORD: ingestion_pass
+      POSTGRES_DB: ingestion_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-ingestion:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ingestion_user -d ingestion_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-transformation:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: transform_user
+      POSTGRES_PASSWORD: transform_pass
+      POSTGRES_DB: transform_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-transformation:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U transform_user -d transform_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-analytics:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: analytics_user
+      POSTGRES_PASSWORD: analytics_pass
+      POSTGRES_DB: analytics_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata-analytics:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U analytics_user -d analytics_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-ml:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ml_user
+      POSTGRES_PASSWORD: ml_pass
+      POSTGRES_DB: ml_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata-ml:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ml_user -d ml_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-recommendations:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: rec_user
+      POSTGRES_PASSWORD: rec_pass
+      POSTGRES_DB: rec_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata-recommendations:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rec_user -d rec_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-configuration:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: config_user
+      POSTGRES_PASSWORD: config_pass
+      POSTGRES_DB: config_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - pgdata-configuration:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U config_user -d config_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-audit:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: audit_user
+      POSTGRES_PASSWORD: audit_pass
+      POSTGRES_DB: audit_db
+    ports:
+      - "5438:5432"
+    volumes:
+      - pgdata-audit:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U audit_user -d audit_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-auth:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+      POSTGRES_DB: auth_db
+    ports:
+      - "5439:5432"
+    volumes:
+      - pgdata-auth:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auth_user -d auth_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== MICROSERVICIOS ====================
+
+  ms-ingestion:
+    build: ./services/ms-ingestion
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ingestion_user:ingestion_pass@db-ingestion:5432/ingestion_db
+    depends_on:
+      db-ingestion:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-transformation:
+    build: ./services/ms-transformation
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://transform_user:transform_pass@db-transformation:5432/transform_db
+      INGESTION_SERVICE_URL: http://ms-ingestion:8000
+    depends_on:
+      db-transformation:
+        condition: service_healthy
+      ms-ingestion:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-analytics:
+    build: ./services/ms-analytics
+    ports:
+      - "8003:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://analytics_user:analytics_pass@db-analytics:5432/analytics_db
+      TRANSFORMATION_SERVICE_URL: http://ms-transformation:8000
+    depends_on:
+      db-analytics:
+        condition: service_healthy
+      ms-transformation:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-ml:
+    build: ./services/ms-ml
+    ports:
+      - "8004:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ml_user:ml_pass@db-ml:5432/ml_db
+      ANALYTICS_SERVICE_URL: http://ms-analytics:8000
+    depends_on:
+      db-ml:
+        condition: service_healthy
+      ms-analytics:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-recommendations:
+    build: ./services/ms-recommendations
+    ports:
+      - "8005:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://rec_user:rec_pass@db-recommendations:5432/rec_db
+      ANALYTICS_SERVICE_URL: http://ms-analytics:8000
+      ML_SERVICE_URL: http://ms-ml:8000
+    depends_on:
+      db-recommendations:
+        condition: service_healthy
+      ms-analytics:
+        condition: service_healthy
+      ms-ml:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-configuration:
+    build: ./services/ms-configuration
+    ports:
+      - "8006:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://config_user:config_pass@db-configuration:5432/config_db
+    depends_on:
+      db-configuration:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ms-audit:
+    build: ./services/ms-audit
+    ports:
+      - "8007:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://audit_user:audit_pass@db-audit:5432/audit_db
+    depends_on:
+      db-audit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  bff:
+    build: ./bff
+    ports:
+      - "8000:8000"
+    environment:
+      INGESTION_SERVICE_URL: http://ms-ingestion:8000
+      TRANSFORMATION_SERVICE_URL: http://ms-transformation:8000
+      ANALYTICS_SERVICE_URL: http://ms-analytics:8000
+      ML_SERVICE_URL: http://ms-ml:8000
+      RECOMMENDATIONS_SERVICE_URL: http://ms-recommendations:8000
+      CONFIGURATION_SERVICE_URL: http://ms-configuration:8000
+      AUDIT_SERVICE_URL: http://ms-audit:8000
+    depends_on:
+      ms-ingestion:
+        condition: service_healthy
+      ms-transformation:
+        condition: service_healthy
+      ms-analytics:
+        condition: service_healthy
+      ms-ml:
+        condition: service_healthy
+      ms-recommendations:
+        condition: service_healthy
+      ms-configuration:
+        condition: service_healthy
+      ms-audit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./fronted
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    depends_on:
+      bff:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  pgdata-ingestion:
+  pgdata-transformation:
+  pgdata-analytics:
+  pgdata-ml:
+  pgdata-recommendations:
+  pgdata-configuration:
+  pgdata-audit:
+  pgdata-auth:

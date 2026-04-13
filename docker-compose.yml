@@ -1,0 +1,51 @@
+# HU-07: mock de ingestion + ms-transformation + PostgreSQL (db-transformation).
+# Para usar el ms-ingestion real, quita mock-ingestion y define INGESTION_BASE_URL.
+
+services:
+  mock-ingestion:
+    build: ./ms-transformation
+    command:
+      [
+        "uvicorn",
+        "mock_ingestion_server:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8001",
+      ]
+    ports:
+      - "8001:8001"
+
+  db-transformation:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db_transformation
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_transformation_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_transformation"]
+      interval: 5s
+      timeout: 5s
+      retries: 8
+
+  ms-transformation:
+    build: ./ms-transformation
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db-transformation:5432/db_transformation
+      INGESTION_BASE_URL: ${INGESTION_BASE_URL:-http://mock-ingestion:8001}
+      INGESTION_LATEST_PATH: ${INGESTION_LATEST_PATH:-/datasets/latest}
+      INGESTION_DOWNLOAD_TEMPLATE: ${INGESTION_DOWNLOAD_TEMPLATE:-/datasets/{dataset_id}/download}
+    depends_on:
+      db-transformation:
+        condition: service_healthy
+      mock-ingestion:
+        condition: service_started
+
+volumes:
+  pg_transformation_data:

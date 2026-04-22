@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from app.routers import load
-from app.routers import zones, indicators, ranking, recommendations
-from app.routers import datasets
+from app.routers import zones, indicators, ranking, recommendations, load, datasets, auth, compare
 import httpx
 import os
 import logging
-from app.routers import auth
 from app.infrastructure.database import engine, Base
 from app.domain import models
 
@@ -23,11 +20,13 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(datasets.router, prefix="/api/datasets", tags=["Datasets"])
 app.include_router(load.router, prefix="/api/load", tags=["Load"])
 app.include_router(zones.router, prefix="/api/zones", tags=["Zones"])
 app.include_router(datasets.router, prefix="/api/datasets", tags=["Datasets"])
 app.include_router(indicators.router, prefix="/api/indicators", tags=["Indicators"])
 app.include_router(ranking.router, prefix="/api/ranking", tags=["Ranking"])
+app.include_router(compare.router, prefix="/api/compare", tags=["Compare"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
 
 
@@ -104,9 +103,6 @@ async def health():
 
 @app.get("/health/summary")
 async def health_summary():
-    """
-    Endpoint de resumen rápido (solo estados principales).
-    """
     status = {"status": "ok", "services": {}}
 
     services = {
@@ -147,6 +143,7 @@ async def root():
             "datasets": "/api/datasets",
             "indicators": "/api/indicators",
             "ranking": "/api/ranking",
+            "compare": "/api/compare",
             "recommendations": "/api/recommendations"
         }
     }

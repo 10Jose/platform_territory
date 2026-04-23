@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './components/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import FileUploadModern from './components/FileUploadModern';
+import RankingTable from './components/RankingTable'; // ✅ IMPORTANTE
 import './styles/auth.css';
 
 // Contexto global de errores
@@ -42,30 +42,14 @@ const ErrorProvider = ({ children }) => {
           borderRadius: '0.5rem',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
           maxWidth: '400px',
-          zIndex: 9999,
-          animation: 'slideIn 0.3s ease-out'
+          zIndex: 9999
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>Error</div>
-              <div style={{ fontSize: '0.875rem' }}>{error.message}</div>
-              {error.details && (
-                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.9 }}>
-                  {error.details}
-                </div>
-              )}
+              <strong>Error</strong>
+              <div>{error.message}</div>
             </div>
-            <button
-              onClick={clearError}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'white',
-                cursor: 'pointer',
-                fontSize: '1.25rem',
-                marginLeft: '1rem'
-              }}
-            >
+            <button onClick={clearError} style={{ background: 'none', border: 'none', color: 'white' }}>
               ×
             </button>
           </div>
@@ -75,88 +59,57 @@ const ErrorProvider = ({ children }) => {
   );
 };
 
-// Componente que muestra Login/Registro
+// Login / Register
 const AuthContainer = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
     <div className="min-h-screen auth-bg">
       <header className="header">
-        <div className="header-content">
-          <div className="flex items-center gap-3">
-            <div className="logo-icon">
-              <span className="material-symbols-outlined">landscape</span>
-            </div>
-            <h1 className="logo-text">Analytical Sanctuary</h1>
-          </div>
-        </div>
+        <h1>Plataforma Analítica Territorial</h1>
       </header>
 
-      <main className="flex-grow flex items-center justify-center p-6 md:p-10">
+      <main>
         {isLogin ? (
           <Login onSwitchToRegister={() => setIsLogin(false)} />
         ) : (
           <Register onSwitchToLogin={() => setIsLogin(true)} />
         )}
       </main>
-
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="copyright">© 2024 Territorial Analytics. All rights reserved.</div>
-          <div className="footer-links">
-            <a href="#" className="footer-link">Privacy Policy</a>
-            <a href="#" className="footer-link">Terms of Service</a>
-            <a href="#" className="footer-link">Help Center</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
 
-// Dashboard protegido (solo después de login)
+// Dashboard
 const Dashboard = () => {
   const { user, logout } = useAuth();
 
   return (
     <div>
-      {/* Barra superior */}
+      {/* HEADER */}
       <div style={{
         backgroundColor: '#0d9488',
         color: 'white',
         padding: '1rem',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        justifyContent: 'space-between'
       }}>
-        <h1>Analytical Sanctuary</h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <span>Welcome, {user?.full_name || user?.username}</span>
-          <button
-            onClick={logout}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              color: 'white'
-            }}
-          >
-            Logout
-          </button>
+        <h1>Dashboard</h1>
+        <div>
+          <span>{user?.username}</span>
+          <button onClick={logout}>Logout</button>
         </div>
       </div>
 
-      {/* Componente de carga de CSV */}
-      <div style={{ padding: '1.5rem' }}>
-        <FileUploadModern />
+      {/* CONTENIDO */}
+      <div style={{ padding: '20px' }}>
+        <RankingTable /> {/* ✅ SOLO ESTO */}
       </div>
     </div>
   );
 };
 
-// Componente principal
+// App principal
 function App() {
   return (
     <ErrorProvider>

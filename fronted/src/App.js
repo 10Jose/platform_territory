@@ -4,7 +4,9 @@ import { AuthProvider, useAuth } from './components/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import FileUploadModern from './components/FileUploadModern';
+// ❌ IMPORTANTE: comentamos esto
+// import FileUploadModern from './components/FileUploadModern';
+import RankingTable from './components/RankingTable';
 import './styles/auth.css';
 
 const AuthContainer = () => {
@@ -31,25 +33,25 @@ const AuthContainer = () => {
         )}
       </main>
 
-       <footer className="footer">
-              <div className="footer-content">
-                <div className="copyright">© 2026 Todos los derechos reservados.</div>
-                <div className="footer-links">
-                  <button
-                    onClick={() => alert('Política de Privacidad - Próximamente')}
-                    className="link-button"
-                  >
-                    Política de Privacidad
-                  </button>
-                  <button
-                    onClick={() => alert('Términos de Servicio - Próximamente')}
-                    className="link-button"
-                  >
-                    Términos de Servicio
-                  </button>
-                </div>
-              </div>
-            </footer>
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="copyright">© 2026 Todos los derechos reservados.</div>
+          <div className="footer-links">
+            <button
+              onClick={() => alert('Política de Privacidad - Próximamente')}
+              className="link-button"
+            >
+              Política de Privacidad
+            </button>
+            <button
+              onClick={() => alert('Términos de Servicio - Próximamente')}
+              className="link-button"
+            >
+              Términos de Servicio
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
@@ -59,15 +61,44 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div style={{ backgroundColor: '#0d9488', color: 'white', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* HEADER */}
+      <div style={{
+        backgroundColor: '#0d9488',
+        color: 'white',
+        padding: '1rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
         <h1>Plataforma Analítica Territorial</h1>
         <div>
           <span>Welcome, {user?.full_name || user?.username}</span>
-          <button onClick={logout} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', color: 'white' }}>Logout</button>
+          <button
+            onClick={logout}
+            style={{
+              marginLeft: '1rem',
+              padding: '0.5rem 1rem',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              color: 'white'
+            }}
+          >
+            Logout
+          </button>
         </div>
       </div>
+
+      {/* CONTENIDO */}
       <div style={{ padding: '1.5rem' }}>
-        <FileUploadModern />
+        {/* ❌ QUITAMOS EL QUE DA ERROR */}
+        {/* <FileUploadModern /> */}
+
+        <hr style={{ margin: '2rem 0' }} />
+
+        {/* ✅ SOLO DEJAMOS EL RANKING */}
+        <RankingTable />
       </div>
     </div>
   );
@@ -79,7 +110,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<AuthContainer />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>

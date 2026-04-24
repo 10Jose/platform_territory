@@ -10,7 +10,8 @@ Backend-for-Frontend (BFF) de la plataforma de analítica territorial.
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import load
-from app.routers import zones, indicators, ranking, recommendations, configuration
+from app.routers import zones, indicators, ranking, recommendations, configuration, compare
+from app.routers.score import router as score_router
 from app.routers import datasets
 from app.routers import auth
 import httpx
@@ -76,6 +77,8 @@ app.include_router(indicators.router, prefix="/api/indicators", tags=["Indicator
 app.include_router(ranking.router, prefix="/api", tags=["Ranking"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
 app.include_router(configuration.router, prefix="/api/configuration", tags=["Configuration"])
+app.include_router(compare.router, prefix="/api/compare", tags=["Compare"])
+app.include_router(score_router, prefix="/api/score", tags=["Score"])
 
 # HEALTH CHECK COMPLETO
 @app.get("/health")
@@ -156,6 +159,8 @@ async def root():
             "indicators": "/api/indicators",
             "ranking": "/api/ranking",
             "configuration": "/api/configuration (GET/PUT)",
+            "compare": "/api/compare?zones=z1,z2 (GET)",
+            "score": "/api/score (POST calcular, GET consultar)",
         }
     }
 

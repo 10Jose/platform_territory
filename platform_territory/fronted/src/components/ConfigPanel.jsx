@@ -9,9 +9,16 @@ const ConfigPanel = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
+  const getHeaders = () => {
+    const token = localStorage.getItem('token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    return headers;
+  };
+
   const fetchConfig = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/configuration/`);
+      const res = await fetch(`${API_URL}/api/configuration/`, { headers: getHeaders() });
       if (!res.ok) throw new Error("Error al cargar configuración");
       const data = await res.json();
       setConfig(data);
@@ -49,7 +56,7 @@ const ConfigPanel = () => {
     try {
       const res = await fetch(`${API_URL}/api/configuration/`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify(config),
       });
       if (!res.ok) {

@@ -14,7 +14,8 @@ async def get_ranking(
     """Lista zonas ordenadas por score de oportunidad con filtros opcionales."""
     try:
         client = AnalyticsClient()
-        ranking = await client.get_ranking()
+        response = await client.get_ranking()
+        ranking = response.get("data", []) if isinstance(response, dict) else response
 
         if order not in ["asc", "desc"]:
             raise HTTPException(status_code=400, detail="order debe ser 'asc' o 'desc'")
@@ -40,6 +41,8 @@ async def get_ranking(
             "total": len(ranking)
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=503,

@@ -93,10 +93,39 @@ export const api = {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-    const response = await fetch(`${API_URL}/api/zones/sync`, {
+    const response = await fetch(`${API_URL}/api/zones/sync/`, {
       method: 'POST',
       headers,
     });
+    return handleResponse(response);
+  },
+
+  /** HU-10: indicadores por zona. */
+  async getIndicators(zoneCode = null) {
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    let url = `${API_URL}/api/indicators/`;
+    if (zoneCode) url += `?zone_code=${zoneCode}`;
+    const response = await fetch(url, { headers });
+    return handleResponse(response);
+  },
+
+  /** HU-10: calcular indicadores desde datos transformados. */
+  async calculateIndicators() {
+    const token = localStorage.getItem('token');
+    const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+    const response = await fetch(`${API_URL}/api/indicators/calculate/`, { method: 'POST', headers });
+    return handleResponse(response);
+  },
+
+  /** HU-18: comparar 2+ zonas lado a lado. */
+  async compareZones(zones = []) {
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const zonesQuery = zones.join(',');
+    const response = await fetch(`${API_URL}/api/compare?zones=${encodeURIComponent(zonesQuery)}`, { headers });
     return handleResponse(response);
   },
 };

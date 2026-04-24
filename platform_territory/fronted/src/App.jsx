@@ -6,6 +6,8 @@ import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import RankingTable from './components/RankingTable';
 import ConfigPanel from './components/ConfigPanel';
+import ZoneComparator from './components/ZoneComparator';
+import IndicatorsTable from './components/IndicatorsTable';
 import './styles/auth.css';
 
 // Contexto global de errores
@@ -104,7 +106,11 @@ const Dashboard = () => {
 
       {/* CONTENIDO */}
       <div style={{ padding: '20px' }}>
+        <IndicatorsTable />
+        <hr style={{ margin: '2rem 0' }} />
         <RankingTable />
+        <hr style={{ margin: '2rem 0' }} />
+        <ZoneComparator />
         <hr style={{ margin: '2rem 0' }} />
         <ConfigPanel />
       </div>

@@ -14,8 +14,16 @@ class AnalyticsClient(BaseClient):
         """``GET /analytics/ranking``."""
         return await self.get("/analytics/ranking")
 
-    async def get_indicators(self, zone_id: str = None):
-        """``GET /analytics/indicators`` o con sufijo de zona si aplica."""
-        if zone_id:
-            return await self.get(f"/analytics/indicators/{zone_id}")
-        return await self.get("/analytics/indicators")
+    async def get_indicators(self, zone_code: str = None):
+        """``GET /analytics/`` — indicadores por zona."""
+        if zone_code:
+            return await self.get(f"/analytics/?zone_code={zone_code}")
+        return await self.get("/analytics/")
+
+    async def calculate_indicators(self):
+        """``POST /analytics/calculate``."""
+        return await self.post("/analytics/calculate")
+
+    async def compare_zones(self, zones: str):
+        """``GET /analytics/compare?zones=...``."""
+        return await self.get(f"/analytics/compare?zones={zones}")

@@ -1,23 +1,38 @@
-"""Agrega indicadores agregados desde **ms-analytics** (requiere usuario autenticado)."""
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, HTTPException, Depends
+from app.services.analytics_client import AnalyticsClient
 from app.routers.auth import get_current_user
 from app.domain.models import User
 import httpx
-import os
 
 router = APIRouter()
 
+
 @router.get("/")
-async def get_indicators(current_user: User = Depends(get_current_user)):
-    """Delega en ``/analytics/indicators`` del servicio de analítica."""
-    analytics_url = os.getenv("ANALYTICS_SERVICE_URL", "http://ms-analytics:8000")
-    
+async def get_indicators(
+        current_user: User = Depends(get_current_user),
+        zone_code: str = None
+):
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(f"{analytics_url}/analytics/indicators", timeout=10.0)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return {"indicators": [], "error": "Analytics service unavailable"}
+        client = AnalyticsClient()
+        result = await client.get_indicators(zone_code)
+        return result
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
     except Exception as e:
-        return {"indicators": [], "error": str(e)}
+        raise HTTPException(500, detail=f"Error al obtener indicadores: {str(e)}")
+
+
+@router.post("/calculate")
+async def calculate_indicators(
+        current_user: User = Depends(get_current_user)
+):
+    try:
+        client = AnalyticsClient()
+        result = await client.calculate_indicators()
+        return result
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 404:
+            raise HTTPException(status_code=404, detail="No hay datos disponibles. Carga un archivo CSV primero.")
+        raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+    except Exception as e:
+        raise HTTPException(500, detail=f"Error al calcular indicadores: {str(e)}")

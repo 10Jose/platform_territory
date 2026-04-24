@@ -4,6 +4,7 @@
 >>>>>>> origin/Miguel
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom'; // ✅ IMPORTANTE
 import '../styles/auth.css';
 
 const Login = ({ onSwitchToRegister }) => {
@@ -11,16 +12,22 @@ const Login = ({ onSwitchToRegister }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const { login, error } = useAuth();
+  const navigate = useNavigate(); // ✅ NUEVO
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
       await login(username, password);
-      window.location.href = '/dashboard';
+
+      // ✅ CAMBIO CLAVE (ANTES ROMPÍA TODO)
+      navigate('/dashboard');
+
     } catch (err) {
-      // Error manejado en AuthContext
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -41,7 +48,8 @@ const Login = ({ onSwitchToRegister }) => {
 
       <div className="card">
         <form onSubmit={handleSubmit}>
-          {/* Email / Username Field */}
+          
+          {/* Username */}
           <div className="form-group">
             <label className="form-label">Username</label>
             <div className="input-wrapper">
@@ -57,11 +65,9 @@ const Login = ({ onSwitchToRegister }) => {
             </div>
           </div>
 
-          {/* Password Field */}
+          {/* Password */}
           <div className="form-group">
-            <div className="flex justify-between items-center">
-              <label className="form-label">Password</label>
-            </div>
+            <label className="form-label">Password</label>
             <div className="input-wrapper">
               <span className="material-symbols-outlined input-icon">lock</span>
               <input
@@ -84,23 +90,25 @@ const Login = ({ onSwitchToRegister }) => {
             </div>
           </div>
 
-          {/* Error Display */}
+          {/* Error */}
           {error && (
             <div className="error-message">
               {error}
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Botón */}
           <div className="pt-2">
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? <div className="spinner"></div> : null}
+              {isLoading && <div className="spinner"></div>}
               Login
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           </div>
+
         </form>
 
+        {/* Registro */}
         <div className="divider">
           <p className="text-sm text-on-surface-variant font-medium">
             No tienes una cuenta todavia?

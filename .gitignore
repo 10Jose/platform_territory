@@ -2,6 +2,7 @@
 fronted/node_modules/
 fronted/build/
 fronted/coverage/
+node_modules/
 
 # Python
 **/__pycache__/

@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+/**
+ * Shell de la SPA: `ErrorProvider`, rutas `/login` y `/dashboard`, carga de CSV y HU-07.
+ */
+import React, { useState, createContext, useContext } from 'react';
+>>>>>>> origin/Miguel
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import Login from './components/Login';
@@ -7,6 +14,79 @@ import ProtectedRoute from './components/ProtectedRoute';
 import FileUploadModern from './components/FileUploadModern';
 import './styles/auth.css';
 
+<<<<<<< HEAD
+=======
+const ErrorContext = createContext();
+
+export const useError = () => {
+  const context = useContext(ErrorContext);
+  if (!context) {
+    throw new Error('useError debe usarse dentro de ErrorProvider');
+  }
+  return context;
+};
+
+const ErrorProvider = ({ children }) => {
+  const [error, setError] = useState(null);
+
+  const showError = (message, details = null) => {
+    setError({ message, details, timestamp: Date.now() });
+    setTimeout(() => setError(null), 5000);
+  };
+
+  const clearError = () => setError(null);
+
+  return (
+    <ErrorContext.Provider value={{ error, showError, clearError }}>
+      {children}
+      {error && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#ef4444',
+            color: 'white',
+            padding: '1rem 1.5rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            maxWidth: '400px',
+            zIndex: 9999,
+            animation: 'slideIn 0.3s ease-out',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+            <div>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>Error</div>
+              <div style={{ fontSize: '0.875rem' }}>{error.message}</div>
+              {error.details && (
+                <div style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.9 }}>
+                  {error.details}
+                </div>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={clearError}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '1.25rem',
+                marginLeft: '1rem',
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+    </ErrorContext.Provider>
+  );
+};
+
+>>>>>>> origin/Miguel
 const AuthContainer = () => {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -75,6 +155,7 @@ const Dashboard = () => {
 
 function App() {
   return (
+<<<<<<< HEAD
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -84,6 +165,19 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+=======
+    <ErrorProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<AuthContainer />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorProvider>
+>>>>>>> origin/Miguel
   );
 }
 

@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from app.routers import scaling_router, indicators_router
+<<<<<<< HEAD
+=======
+from app.routers.ranking import router as ranking_router
+>>>>>>> origin/Miguel
 from app.infrastructure.database import engine, Base
 from app.domain import models
 
@@ -11,6 +15,10 @@ app = FastAPI(
 
 app.include_router(scaling_router, prefix="/analytics", tags=["Analytics"])
 app.include_router(indicators_router, prefix="/analytics", tags=["Analytics"])
+<<<<<<< HEAD
+=======
+app.include_router(ranking_router, prefix="/analytics", tags=["Analytics"])
+>>>>>>> origin/Miguel
 
 
 @app.get("/health")

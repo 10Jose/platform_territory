@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 import httpx
 from typing import Any, Dict
 
+=======
+"""Cliente HTTP mínimo (GET/POST JSON) reutilizable por servicios downstream."""
+import httpx
+from typing import Any, Dict
+
+
+>>>>>>> origin/Miguel
 class BaseClient:
     def __init__(self, base_url: str):
         self.base_url = base_url

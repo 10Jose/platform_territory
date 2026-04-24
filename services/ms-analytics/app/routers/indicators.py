@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+"""Indicadores de alto nivel derivados del listado de zonas en **ms-transformation**."""
+>>>>>>> origin/Miguel
 from fastapi import APIRouter
 import httpx
 import os
@@ -6,6 +10,10 @@ router = APIRouter()
 
 @router.get("/indicators")
 async def get_indicators():
+<<<<<<< HEAD
+=======
+    """Totales y cobertura a partir de ``GET /zones`` del servicio de transformación."""
+>>>>>>> origin/Miguel
     transformation_url = os.getenv("TRANSFORMATION_SERVICE_URL", "http://ms-transformation:8000")
     
     try:

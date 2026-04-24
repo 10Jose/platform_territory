@@ -1,9 +1,20 @@
+<<<<<<< HEAD
+=======
+"""
+Utilidades de seguridad del BFF: hash de contraseñas (bcrypt) y tokens JWT (python-jose).
+
+**Nota:** ``SECRET_KEY`` está fija en código solo para desarrollo; en producción debe venir de variable de entorno.
+"""
+>>>>>>> origin/Miguel
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
+<<<<<<< HEAD
 # Configuración JWT
+=======
+>>>>>>> origin/Miguel
 SECRET_KEY = "pl4tf0rm4_territ0ri4l"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -34,7 +45,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 
 def decode_token(token: str) -> Optional[dict]:
+<<<<<<< HEAD
     """Decodifica token """
+=======
+    """Decodifica y valida el JWT; devuelve ``None`` si firma o expiración son inválidas."""
+>>>>>>> origin/Miguel
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload

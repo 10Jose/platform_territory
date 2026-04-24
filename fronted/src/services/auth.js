@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ * Autenticación contra el BFF: registro, login (OAuth2 password), perfil y token en `localStorage`.
+ */
+>>>>>>> origin/Miguel
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const handleError = async (response) => {

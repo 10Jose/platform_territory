@@ -2,10 +2,18 @@ import React, { useState, useRef } from 'react';
 import './FileUploadModern.css';
 import ZonesList from './ZonesList';
 import IndicatorsTable from './IndicatorsTable';
+<<<<<<< HEAD
 import { api } from '../services/api';
 
 const FileUploadModern = () => {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' o 'indicators'
+=======
+import ZoneComparator from './ZoneComparator';
+import { api } from '../services/api';
+
+const FileUploadModern = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+>>>>>>> origin/Miguel
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -110,6 +118,16 @@ const FileUploadModern = () => {
               <span className="material-symbols-outlined">analytics</span>
               Indicadores
             </button>
+<<<<<<< HEAD
+=======
+            <button
+              className={`tab-button ${activeTab === 'compare' ? 'active' : ''}`}
+              onClick={() => setActiveTab('compare')}
+            >
+              <span className="material-symbols-outlined">table_chart</span>
+              Comparación
+            </button>
+>>>>>>> origin/Miguel
           </div>
         </nav>
       </header>
@@ -246,6 +264,13 @@ const FileUploadModern = () => {
           {activeTab === 'indicators' && (
             <IndicatorsTable />
           )}
+<<<<<<< HEAD
+=======
+
+          {activeTab === 'compare' && (
+            <ZoneComparator />
+          )}
+>>>>>>> origin/Miguel
         </div>
       </main>
 

@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+=======
+"""
+Backend-for-Frontend (BFF) de la plataforma de analítica territorial.
+
+- Expone API unificada bajo ``/api/*`` para el front y herramientas (Postman).
+- Autenticación JWT y usuarios en ``db-auth`` (SQLAlchemy async).
+- Agrega llamadas HTTP a microservicios: ingesta, transformación, analítica, ML,
+  recomendaciones, configuración y auditoría.
+- Middleware de ``X-Trace-ID`` para correlación de logs.
+
+Variables de entorno típicas: ``AUTH_DATABASE_URL``, ``INGESTION_SERVICE_URL``,
+``TRANSFORMATION_SERVICE_URL``, ``ANALYTICS_SERVICE_URL``, etc.
+"""
+>>>>>>> origin/Miguel
 from fastapi import FastAPI, Request
 from starlette.middleware.cors import CORSMiddleware
 from app.routers import load
@@ -17,6 +32,11 @@ from app.domain import models
 trace_id_var: ContextVar[str] = ContextVar("trace_id", default="")
 
 class TraceIdFilter(logging.Filter):
+<<<<<<< HEAD
+=======
+    """Inyecta ``trace_id`` en cada registro de log (contexto por petición)."""
+
+>>>>>>> origin/Miguel
     def filter(self, record):
         record.trace_id = trace_id_var.get() or "no-trace"
         return True
@@ -28,10 +48,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.addFilter(TraceIdFilter())
 
+<<<<<<< HEAD
 app = FastAPI(title="BFF - Plataforma de Analítica Territorial")
 
 @app.middleware("http")
 async def trace_id_middleware(request: Request, call_next):
+=======
+app = FastAPI(
+    title="BFF - Plataforma de Analítica Territorial",
+    description="Capa de agregación y seguridad entre el cliente y los microservicios.",
+    version="1.0.0",
+)
+
+@app.middleware("http")
+async def trace_id_middleware(request: Request, call_next):
+    """Asigna o reenvía ``X-Trace-ID`` y registra duración por petición."""
+>>>>>>> origin/Miguel
     trace_id = request.headers.get("X-Trace-ID", str(uuid.uuid4())[:8])
     trace_id_var.set(trace_id)
     start_time = time.time()
@@ -160,6 +192,10 @@ async def health_summary():
 
 @app.get("/")
 async def root():
+<<<<<<< HEAD
+=======
+    """Índice de descubrimiento con rutas principales (sin OpenAPI)."""
+>>>>>>> origin/Miguel
     return {
         "message": "BFF - Plataforma Analítica Territorial",
         "docs": "/docs",
@@ -171,6 +207,10 @@ async def root():
             "auth_me": "/api/auth/me (GET)",
             "load": "/api/load (POST)",
             "zones": "/api/zones",
+<<<<<<< HEAD
+=======
+            "zones_sync_hu07": "/api/zones/sync (POST, auth)",
+>>>>>>> origin/Miguel
             "datasets": "/api/datasets",
             "indicators": "/api/indicators",
             "ranking": "/api/ranking",
@@ -180,5 +220,9 @@ async def root():
 
 @app.on_event("startup")
 async def init_db():
+<<<<<<< HEAD
+=======
+    """Crea tablas de usuarios en ``db-auth`` si no existen."""
+>>>>>>> origin/Miguel
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

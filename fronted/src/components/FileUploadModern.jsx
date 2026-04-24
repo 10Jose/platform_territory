@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ * Pantalla principal: subida de CSV al BFF, botón HU-07 (sync transformación) y lista de zonas.
+ */
+>>>>>>> origin/Miguel
 import React, { useState, useRef } from 'react';
 import './FileUploadModern.css';
 import ZonesList from './ZonesList';
@@ -12,6 +18,11 @@ const FileUploadModern = () => {
   const [dragActive, setDragActive] = useState(false);
   const [refreshZones, setRefreshZones] = useState(false);
   const [syncing, setSyncing] = useState(false);
+<<<<<<< HEAD
+=======
+  const [syncTransformResult, setSyncTransformResult] = useState(null);
+  const [syncTransformLoading, setSyncTransformLoading] = useState(false);
+>>>>>>> origin/Miguel
   const fileInputRef = useRef(null);
   const { showError } = useError();
 
@@ -105,6 +116,26 @@ const FileUploadModern = () => {
     fileInputRef.current.click();
   };
 
+<<<<<<< HEAD
+=======
+  const handleHu07Sync = async () => {
+    setSyncTransformLoading(true);
+    setSyncTransformResult(null);
+    setError(null);
+    try {
+      const data = await api.syncZonesTransform();
+      setSyncTransformResult(data);
+      setRefreshZones((prev) => !prev);
+    } catch (err) {
+      const errorMsg = err.message || 'Error en transformación HU-07';
+      setError(errorMsg);
+      showError(errorMsg);
+    } finally {
+      setSyncTransformLoading(false);
+    }
+  };
+
+>>>>>>> origin/Miguel
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -185,6 +216,41 @@ const FileUploadModern = () => {
             <span className="size-info">Tamaño máximo: 50MB</span>
           </div>
 
+<<<<<<< HEAD
+=======
+          <div className="flex-center mt-6" style={{ flexDirection: 'column', gap: '0.75rem' }}>
+            <p style={{ margin: 0, color: '#475569', fontSize: '0.9rem', textAlign: 'center', maxWidth: '36rem' }}>
+              <strong>HU-07 — Transformación:</strong> toma el último dataset válido en ingestion, aplica reglas con Pandas,
+              guarda en <code>transformed_zone_data</code> y registra <code>transformation_runs</code> (sin modificar el CSV original).
+            </p>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={handleHu07Sync}
+              disabled={syncTransformLoading}
+              style={{ maxWidth: '320px' }}
+            >
+              <span className="material-symbols-outlined">transform</span>
+              {syncTransformLoading ? 'Transformando…' : 'Ejecutar transformación (sync zonas)'}
+            </button>
+          </div>
+
+          {syncTransformResult && (
+            <div className="success-message" style={{ marginTop: '1.25rem' }}>
+              <h3>Transformación HU-07 completada</h3>
+              <p><strong>Dataset ingestion ID:</strong> {syncTransformResult.dataset_id}</p>
+              <p><strong>Transformation run ID:</strong> {syncTransformResult.transformation_run_id}</p>
+              <p><strong>Zonas procesadas:</strong> {syncTransformResult.zones_processed}</p>
+              <p><strong>Upserts:</strong> {syncTransformResult.upserted}</p>
+              <p><strong>Versión reglas:</strong> {syncTransformResult.rules_version}</p>
+              <details style={{ marginTop: '0.75rem' }}>
+                <summary className="json-summary">Respuesta completa</summary>
+                <pre className="json-pre">{JSON.stringify(syncTransformResult, null, 2)}</pre>
+              </details>
+            </div>
+          )}
+
+>>>>>>> origin/Miguel
           {/* Mensaje de sincronización */}
           {syncing && (
             <div className="syncing-message">

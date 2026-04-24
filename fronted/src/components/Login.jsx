@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+/** Formulario de acceso; usa `authService.login` y navega al dashboard. */
+>>>>>>> origin/Miguel
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import '../styles/auth.css';

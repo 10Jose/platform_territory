@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ * Redirige a `/login` si no hay usuario autenticado (tras comprobar token con el BFF).
+ */
+>>>>>>> origin/Miguel
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';

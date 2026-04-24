@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+<<<<<<< HEAD
 from app.routers import zones, indicators, ranking, recommendations, load, datasets, auth
+=======
+from app.routers import zones, indicators, ranking, recommendations, load, datasets, auth, compare
+>>>>>>> origin/Miguel
 import httpx
 import os
 import logging
@@ -26,6 +30,7 @@ app.include_router(zones.router, prefix="/api/zones", tags=["Zones"])
 app.include_router(datasets.router, prefix="/api/datasets", tags=["Datasets"])
 app.include_router(indicators.router, prefix="/api/indicators", tags=["Indicators"])
 app.include_router(ranking.router, prefix="/api/ranking", tags=["Ranking"])
+app.include_router(compare.router, prefix="/api/compare", tags=["Compare"])
 app.include_router(recommendations.router, prefix="/api/recommendations", tags=["Recommendations"])
 
 
@@ -142,6 +147,7 @@ async def root():
             "datasets": "/api/datasets",
             "indicators": "/api/indicators",
             "ranking": "/api/ranking",
+            "compare": "/api/compare",
             "recommendations": "/api/recommendations"
         }
     }

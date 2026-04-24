@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+"""
+Ranking de zonas por score ponderado (densidad, ingreso, educación, presencia comercial)
+usando ``GET /zones/data`` de **ms-transformation**.
+"""
+>>>>>>> origin/Miguel
 from fastapi import APIRouter
 import httpx
 import os
@@ -6,6 +13,10 @@ router = APIRouter()
 
 @router.get("/ranking")
 async def get_ranking():
+<<<<<<< HEAD
+=======
+    """Ordena zonas por score descendente; incluye fallback de ejemplo si falla la llamada."""
+>>>>>>> origin/Miguel
     transformation_url = os.getenv("TRANSFORMATION_SERVICE_URL", "http://ms-transformation:8000")
     
     try:

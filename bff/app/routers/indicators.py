@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+"""Agrega indicadores agregados desde **ms-analytics** (requiere usuario autenticado)."""
+>>>>>>> origin/Miguel
 from fastapi import APIRouter, Depends
 from app.routers.auth import get_current_user
 from app.domain.models import User
@@ -8,6 +12,10 @@ router = APIRouter()
 
 @router.get("/")
 async def get_indicators(current_user: User = Depends(get_current_user)):
+<<<<<<< HEAD
+=======
+    """Delega en ``/analytics/indicators`` del servicio de analítica."""
+>>>>>>> origin/Miguel
     analytics_url = os.getenv("ANALYTICS_SERVICE_URL", "http://ms-analytics:8000")
     
     try:

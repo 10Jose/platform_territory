@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ * Punto de entrada CRA: monta la app bajo `ErrorBoundary` y `React.StrictMode`.
+ */
+>>>>>>> origin/Miguel
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+"""
+Validación de esquema y negocio sobre un **DataFrame** de ingesta.
+
+Define columnas obligatorias, convierte tipos y devuelve conteos de filas válidas/inválidas
+y lista de errores por fila (HU de calidad de datos).
+"""
+>>>>>>> origin/Miguel
 import pandas as pd
 
 REQUIRED_COLUMNS = ['zona', 'poblacion', 'ingreso', 'educacion', 'negocios']
@@ -35,6 +44,17 @@ def convert_education_to_years(value):
 
 
 def validate_dataset(df: pd.DataFrame):
+<<<<<<< HEAD
+=======
+    """
+    Valida el CSV ya parseado; lanza ``ValueError`` si faltan columnas obligatorias.
+
+    Returns
+    -------
+    tuple
+        ``(valid_count, invalid_count, errors, rules_version)``
+    """
+>>>>>>> origin/Miguel
     # Verificar que existan todas las columnas requeridas
     missing = set(REQUIRED_COLUMNS) - set(df.columns)
     if missing:

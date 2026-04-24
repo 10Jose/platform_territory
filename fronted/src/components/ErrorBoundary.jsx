@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+/**
+ * Captura errores de render en el árbol de React y muestra un fallback en pantalla.
+ */
+>>>>>>> origin/Miguel
 import React from 'react';
 
 class ErrorBoundary extends React.Component {

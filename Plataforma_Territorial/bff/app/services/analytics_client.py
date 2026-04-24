@@ -17,4 +17,11 @@ class AnalyticsClient(BaseClient):
 
     async def calculate_indicators(self):
         """Dispara el cálculo de indicadores."""
+<<<<<<< HEAD
         return await self.post("/analytics/calculate")
+=======
+        return await self.post("/analytics/calculate")
+
+    async def compare_zones(self, zones: str):
+        return await self.get(f"/analytics/compare?zones={zones}")
+>>>>>>> origin/Miguel

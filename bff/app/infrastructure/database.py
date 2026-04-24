@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+"""
+Persistencia del BFF: solo modelos de **autenticación** (usuarios).
+
+La URL por defecto apunta a ``db-auth`` en Docker Compose.
+"""
+>>>>>>> origin/Miguel
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -9,5 +17,9 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 Base = declarative_base()
 
 async def get_db():
+<<<<<<< HEAD
+=======
+    """Sesión SQLAlchemy async por petición (inyectada en rutas con ``Depends``)."""
+>>>>>>> origin/Miguel
     async with AsyncSessionLocal() as session:
         yield session

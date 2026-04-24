@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Carga de archivos CSV hacia **ms-ingestion** (multipart).
 
 Tras una carga exitosa dispara en segundo plano la sincronización HU-07 en **ms-transformation**.
 """
->>>>>>> origin/Miguel
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from app.services.ingestion_client import IngestionClient
 from app.services.transformation_client import TransformationClient
@@ -36,10 +33,7 @@ async def upload_file(
         file: UploadFile = File(...),
         current_user: User = Depends(get_current_user)
 ):
-<<<<<<< HEAD
-=======
     """Envía el CSV al servicio de ingesta y registra eventos de auditoría."""
->>>>>>> origin/Miguel
     logger.info(f"Endpoint /api/load llamado por usuario: {current_user.username}")
     try:
         client = IngestionClient()

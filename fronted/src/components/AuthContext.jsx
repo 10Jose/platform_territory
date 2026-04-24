@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 /**
  * Contexto de sesión: usuario actual, login/logout y token vía `authService`.
  */
->>>>>>> origin/Miguel
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services/auth';
 

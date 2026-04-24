@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Cliente de **ms-audit**: envío de eventos con reintentos y cola local en ``/tmp/audit_fallback.jsonl``.
 
 Usado tras cargas, sincronizaciones y errores en el BFF.
 """
->>>>>>> origin/Miguel
 import httpx
 import os
 import logging
@@ -21,11 +18,8 @@ MAX_RETRIES = 3
 RETRY_DELAY = 1.0
 
 class AuditClient:
-<<<<<<< HEAD
-=======
     """Abstrae ``POST /events`` en el microservicio de auditoría."""
 
->>>>>>> origin/Miguel
     async def log_event(self, event_type: str, data: dict, retry_count: int = 0):
         """Registra evento de auditoría con reintentos y fallback local."""
         event = {

@@ -1,4 +1,3 @@
-
 version: "3.9"
 services:
   # ==================== BASES DE DATOS ====================
@@ -26,12 +25,7 @@ services:
       POSTGRES_PASSWORD: transform_pass
       POSTGRES_DB: transform_db
     ports:
-<<<<<<< HEAD
       - "5433:5432"
-=======
-      # 5433 suele estar ocupado por otros proyectos Docker; usa 15433 en el host
-      - "15433:5432"
->>>>>>> origin/Miguel
     volumes:
       - pgdata-transformation:/var/lib/postgresql/data
     healthcheck:
@@ -140,10 +134,7 @@ services:
 
   ms-ingestion:
     build: ./services/ms-ingestion
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8001:8000"
     environment:
@@ -159,10 +150,7 @@ services:
 
   ms-transformation:
     build: ./services/ms-transformation
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8002:8000"
     environment:
@@ -181,15 +169,13 @@ services:
 
   ms-analytics:
     build: ./services/ms-analytics
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8003:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://analytics_user:analytics_pass@db-analytics:5432/analytics_db
       TRANSFORMATION_SERVICE_URL: http://ms-transformation:8000
+      CONFIGURATION_SERVICE_URL: http://ms-configuration:8000
     depends_on:
       db-analytics:
         condition: service_healthy
@@ -203,10 +189,7 @@ services:
 
   ms-ml:
     build: ./services/ms-ml
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8004:8000"
     environment:
@@ -225,10 +208,7 @@ services:
 
   ms-recommendations:
     build: ./services/ms-recommendations
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8005:8000"
     environment:
@@ -250,10 +230,7 @@ services:
 
   ms-configuration:
     build: ./services/ms-configuration
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8006:8000"
     environment:
@@ -269,10 +246,7 @@ services:
 
   ms-audit:
     build: ./services/ms-audit
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8007:8000"
     environment:
@@ -288,10 +262,7 @@ services:
 
   bff:
     build: ./bff
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "8000:8000"
     environment:
@@ -325,10 +296,7 @@ services:
 
   frontend:
     build: ./fronted
-<<<<<<< HEAD
-=======
     restart: unless-stopped
->>>>>>> origin/Miguel
     ports:
       - "3000:3000"
     environment:

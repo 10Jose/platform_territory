@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from fastapi import FastAPI
-
-app = FastAPI(title="Nombre del Microservicio")
-=======
 """
 Microservicio de **recomendaciones** (placeholder): consumiría analítica/ML para sugerencias por zona.
 
@@ -16,7 +11,6 @@ app = FastAPI(
     version="0.1.0",
 )
 
->>>>>>> origin/Miguel
 
 @app.get("/health")
 def health():

@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Endpoints REST de datos: **carga** (``POST /load``), listado y **descarga** del CSV por id.
 
 Incluye límites de SLA (tamaño, filas, timeout) y persistencia bajo ``/app/uploads``.
 """
->>>>>>> origin/Miguel
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Header
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession

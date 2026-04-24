@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Rutas de autenticación: registro, OAuth2 password flow (``/token``) y perfil ``/me``.
 
 El token JWT se envía como ``Authorization: Bearer`` en el resto de endpoints protegidos.
 """
->>>>>>> origin/Miguel
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession

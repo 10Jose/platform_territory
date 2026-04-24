@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 """
 Recomendaciones heurísticas a partir del ranking de **ms-analytics** (top 3 zonas).
 """
->>>>>>> origin/Miguel
 from fastapi import APIRouter
 import httpx
 import os
@@ -12,10 +9,7 @@ router = APIRouter()
 
 @router.get("/")
 async def get_recommendations():
-<<<<<<< HEAD
-=======
     """Genera textos de prioridad de inversión según el score de cada zona."""
->>>>>>> origin/Miguel
     analytics_url = os.getenv("ANALYTICS_SERVICE_URL", "http://ms-analytics:8000")
     
     try:

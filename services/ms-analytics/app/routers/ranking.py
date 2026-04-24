@@ -1,6 +1,5 @@
 """
-Ranking de zonas por score ponderado (densidad, ingreso, educación, presencia comercial)
-usando ``GET /zones/data`` de **ms-transformation**.
+Ranking de zonas por score ponderado usando parámetros de ms-configuration (HU-11).
 """
 from fastapi import APIRouter, Request
 import httpx
@@ -8,39 +7,68 @@ import os
 
 router = APIRouter()
 
+CONFIGURATION_URL = os.getenv("CONFIGURATION_SERVICE_URL", "http://ms-configuration:8000")
+TRANSFORMATION_URL = os.getenv("TRANSFORMATION_SERVICE_URL", "http://ms-transformation:8000")
+
+# Valores por defecto si ms-configuration no responde
+DEFAULT_CONFIG = {
+    "weight_population": 0.25,
+    "weight_income": 0.30,
+    "weight_education": 0.25,
+    "weight_business": 0.20,
+    "threshold_high": 0.7,
+    "threshold_medium": 0.5,
+    "max_population_density": 3000.0,
+    "max_average_income": 100000.0,
+    "max_education_level": 20.0,
+    "max_commercial_presence": 1.0,
+}
+
+
+async def get_model_config() -> dict:
+    """Obtiene parámetros activos de ms-configuration; fallback a defaults."""
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{CONFIGURATION_URL}/config/parameters", timeout=5.0)
+            if resp.status_code == 200:
+                return resp.json()
+    except Exception:
+        pass
+    return DEFAULT_CONFIG
+
+
 @router.get("/ranking")
 async def get_ranking(request: Request):
-    """Ordena zonas por score descendente; incluye fallback de ejemplo si falla la llamada."""
-    transformation_url = os.getenv("TRANSFORMATION_SERVICE_URL", "http://ms-transformation:8000")
-
+    """Ordena zonas por score descendente usando configuración activa."""
     top = int(request.query_params.get("top", 0))
     order = request.query_params.get("order", "desc")
 
+    cfg = await get_model_config()
+
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"{transformation_url}/zones/data", timeout=10.0)
+            response = await client.get(f"{TRANSFORMATION_URL}/zones/data", timeout=10.0)
 
             if response.status_code == 200:
                 zones_data = response.json()
-
                 ranking = []
 
                 for zone in zones_data:
-                    pop_norm = min(zone.get('population_density', 0) / 3000, 1)
-                    income_norm = min(zone.get('average_income', 0) / 100000, 1)
-                    edu_norm = min(zone.get('education_level', 0) / 20, 1)
-                    business_norm = min(zone.get('commercial_presence_index', 0) / 1, 1)
+                    pop_norm = min(zone.get('population_density', 0) / cfg['max_population_density'], 1)
+                    income_norm = min(zone.get('average_income', 0) / cfg['max_average_income'], 1)
+                    edu_norm = min(zone.get('education_level', 0) / cfg['max_education_level'], 1)
+                    business_norm = min(zone.get('commercial_presence_index', 0) / cfg['max_commercial_presence'], 1)
 
                     score = (
-                        pop_norm * 0.25 +
-                        income_norm * 0.30 +
-                        edu_norm * 0.25 +
-                        business_norm * 0.20
+                        pop_norm * cfg['weight_population'] +
+                        income_norm * cfg['weight_income'] +
+                        edu_norm * cfg['weight_education'] +
+                        business_norm * cfg['weight_business']
                     )
 
-                    if score >= 0.7:
+                    if score >= cfg['threshold_high']:
                         level = "alta oportunidad"
-                    elif score >= 0.5:
+                    elif score >= cfg['threshold_medium']:
                         level = "oportunidad media"
                     else:
                         level = "baja oportunidad"
@@ -51,10 +79,7 @@ async def get_ranking(request: Request):
                         "level": level
                     })
 
-                ranking.sort(
-                    key=lambda x: x['score'],
-                    reverse=(order == "desc")
-                )
+                ranking.sort(key=lambda x: x['score'], reverse=(order == "desc"))
 
                 if top > 0:
                     ranking = ranking[:top]
@@ -62,26 +87,14 @@ async def get_ranking(request: Request):
                 for i, zona in enumerate(ranking, start=1):
                     zona["rank"] = i
 
-                return {
-                    "success": True,
-                    "data": ranking,
-                    "error": None
-                }
+                return {"success": True, "data": ranking, "error": None}
 
-    except Exception as e:
+    except Exception:
         pass
 
     # fallback
     fallback = [
-        {"zone": "Suba", "score": 0.87, "level": "alta oportunidad"},
-        {"zone": "Usaquén", "score": 0.81, "level": "alta oportunidad"}
+        {"zone": "Suba", "score": 0.87, "level": "alta oportunidad", "rank": 1},
+        {"zone": "Usaquén", "score": 0.81, "level": "alta oportunidad", "rank": 2},
     ]
-
-    for i, zona in enumerate(fallback, start=1):
-        zona["rank"] = i
-
-    return {
-        "success": True,
-        "data": fallback,
-        "error": None
-    }
+    return {"success": True, "data": fallback, "error": None}

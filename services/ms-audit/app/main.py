@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Servicio de **auditoría**: recibe eventos JSON del BFF (cargas, sync, errores).
 
 Persistencia en memoria para desarrollo; en producción sustituir por base de datos.
 """
->>>>>>> origin/Miguel
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Any, Optional
@@ -15,13 +12,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-<<<<<<< HEAD
-app = FastAPI(title="Audit Service")
-
-# Almacenamiento en memoria (en producción sería BD)
-audit_events = []
-
-=======
 app = FastAPI(
     title="Audit Service",
     description="Registro de eventos de negocio para trazabilidad.",
@@ -31,7 +21,6 @@ app = FastAPI(
 audit_events = []
 
 
->>>>>>> origin/Miguel
 class AuditEvent(BaseModel):
     event_type: str
     data: dict

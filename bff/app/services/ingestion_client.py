@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-=======
 """
 Cliente HTTP del BFF hacia **ms-ingestion**: subida de CSV y lectura de datasets/archivos.
 
 Usado por ``/api/load`` y ``/api/datasets``.
 """
->>>>>>> origin/Miguel
 import httpx
 import os
 from fastapi import UploadFile, HTTPException
@@ -15,20 +12,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 class IngestionClient:
-<<<<<<< HEAD
-=======
     """Encapsula ``POST /data/load``, ``GET /data/datasets`` y ``GET /data/file/{id}``."""
 
->>>>>>> origin/Miguel
     def __init__(self):
         self.base_url = os.getenv("INGESTION_SERVICE_URL", "http://ms-ingestion:8000")
         logger.info(f"Cliente de ingesta inicializado con URL: {self.base_url}")
 
     async def upload(self, file: UploadFile, uploaded_by: Optional[str] = None):
-<<<<<<< HEAD
-=======
         """Reenvía el multipart al servicio de ingesta; propaga ``HTTPException`` con el detalle remoto."""
->>>>>>> origin/Miguel
         logger.info(f"Procesando archivo: {file.filename}, tamaño: {file.size}")
         contents = await file.read()
         logger.info(f"Contenido leído: {len(contents)} bytes")
@@ -80,10 +71,7 @@ class IngestionClient:
                 raise HTTPException(status_code=503, detail=f"No se pudo conectar con el servicio de ingesta: {str(e)}")
 
     async def get_datasets(self, skip: int = 0, limit: int = 100, validation_status: Optional[str] = None):
-<<<<<<< HEAD
-=======
         """Lista datasets con paginación y filtro opcional de ``validation_status``."""
->>>>>>> origin/Miguel
         params = {"skip": skip, "limit": limit}
         if validation_status:
             params["validation_status"] = validation_status
@@ -97,10 +85,7 @@ class IngestionClient:
             return response.json()
 
     async def get_dataset_file(self, dataset_id: int):
-<<<<<<< HEAD
-=======
         """Descarga bytes del CSV (uso interno si se expone proxy)."""
->>>>>>> origin/Miguel
         async with httpx.AsyncClient() as client:
             response = await client.get(f"{self.base_url}/data/file/{dataset_id}")
             response.raise_for_status()

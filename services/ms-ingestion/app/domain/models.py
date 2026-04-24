@@ -1,18 +1,12 @@
-<<<<<<< HEAD
-=======
 """
 Modelos de carga: registro lógico (**DatasetLoad**) y referencia al fichero en disco (**DatasetFileReference**).
 """
->>>>>>> origin/Miguel
 from sqlalchemy import Column, Integer, String, DateTime, JSON, func, ForeignKey
 from app.infrastructure.database import Base
 
 class DatasetLoad(Base):
-<<<<<<< HEAD
-=======
     """Una fila por carga: conteos, estado de validación y metadatos JSON (columnas, errores)."""
 
->>>>>>> origin/Miguel
     __tablename__ = "dataset_loads"
     id = Column(Integer, primary_key=True, index=True)
     file_name = Column(String, nullable=False)
@@ -31,11 +25,8 @@ class DatasetLoad(Base):
     parent_version_id = Column(Integer, ForeignKey("dataset_loads.id"), nullable=True)
 
 class DatasetFileReference(Base):
-<<<<<<< HEAD
-=======
     """Ruta física del CSV y checksum SHA-256 para integridad en descargas."""
 
->>>>>>> origin/Miguel
     __tablename__ = "dataset_file_references"
 
     id = Column(Integer, primary_key=True, index=True)

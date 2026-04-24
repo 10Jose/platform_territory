@@ -4,7 +4,8 @@ import { AuthProvider, useAuth } from './components/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import RankingTable from './components/RankingTable'; // ✅ IMPORTANTE
+import RankingTable from './components/RankingTable';
+import ConfigPanel from './components/ConfigPanel';
 import './styles/auth.css';
 
 // Contexto global de errores
@@ -103,7 +104,9 @@ const Dashboard = () => {
 
       {/* CONTENIDO */}
       <div style={{ padding: '20px' }}>
-        <RankingTable /> {/* ✅ SOLO ESTO */}
+        <RankingTable />
+        <hr style={{ margin: '2rem 0' }} />
+        <ConfigPanel />
       </div>
     </div>
   );

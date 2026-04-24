@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey, Float, Index
-from sqlalchemy.sql import func
-from app.infrastructure.database import Base
-
-class TransformationRun(Base):
-=======
 """
 Modelos ORM para la base ``db-transformation`` (HU-07).
 
@@ -19,7 +12,6 @@ from app.infrastructure.database import Base
 class TransformationRun(Base):
     """Metadatos de una corrida de transformación vinculada a un ``dataset_load_id`` en ingesta."""
 
->>>>>>> origin/Miguel
     __tablename__ = "transformation_runs"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -32,11 +24,8 @@ class TransformationRun(Base):
 
 
 class TransformedZoneData(Base):
-<<<<<<< HEAD
-=======
     """Indicadores por zona tras aplicar reglas de transformación (salida analítica)."""
 
->>>>>>> origin/Miguel
     __tablename__ = "transformed_zone_data"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -50,13 +39,8 @@ class TransformedZoneData(Base):
     commercial_presence_index = Column(Float, nullable=True)
     other_variables_json = Column(JSON, nullable=True)
 
-<<<<<<< HEAD
-
-    __table_args__ = (
-=======
     __table_args__ = (
         UniqueConstraint("zone_code", name="uq_transformed_zone_zone_code"),
->>>>>>> origin/Miguel
         Index('ix_transformed_zone_run_code', 'transformation_run_id', 'zone_code'),
         Index('ix_transformed_zone_run_name', 'transformation_run_id', 'zone_name'),
     )

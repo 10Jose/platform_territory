@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 /** Registro de usuario vía `POST /api/auth/register`. */
->>>>>>> origin/Miguel
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import '../styles/auth.css';

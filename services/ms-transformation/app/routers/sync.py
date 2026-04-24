@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-=======
 """
 Endpoints de sincronización HU-07.
 
@@ -16,7 +11,6 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
->>>>>>> origin/Miguel
 from app.infrastructure.database import get_db
 from app.domain.models import TransformationRun, TransformedZoneData
 from app.services.ingestion_client import IngestionClient
@@ -28,18 +22,6 @@ import unicodedata
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-<<<<<<< HEAD
-# Constantes para reproducibilidad
-RULES_VERSION = "1.0.0"
-RULES_APPLIED = f"extracción de zonas, normalización, prevención de duplicados (v{RULES_VERSION})"
-
-
-def convert_education_to_years(value):
-    """Convierte texto descriptivo a años de escolaridad."""
-    if value is None or pd.isna(value):
-        return None
-
-=======
 # Versión semántica de las reglas de negocio (auditoría en ``TransformationRun.rules_applied``).
 RULES_VERSION = "1.0.0"
 RULES_METADATA = {
@@ -62,15 +44,10 @@ def convert_education_to_years(value):
     """Convierte texto de escolaridad o número a años equivalentes; ``None`` si no es reconocible."""
     if value is None or pd.isna(value):
         return None
->>>>>>> origin/Miguel
     try:
         return float(value)
     except (ValueError, TypeError):
         pass
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/Miguel
     text = str(value).lower().strip()
     mapping = {
         "ninguna": 0, "ninguno": 0,
@@ -86,34 +63,6 @@ def convert_education_to_years(value):
 
 
 def normalize_zone_name(name: str) -> str:
-<<<<<<< HEAD
-    """Normaliza nombres de zonas: mayúsculas, sin tildes, sin espacios extras."""
-    if not name or not isinstance(name, str):
-        return ""
-    name = name.upper()
-    name = unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').decode('ASCII')
-    name = ' '.join(name.split())
-    return name
-
-
-def transform_zone(row):
-    """Transforma una fila del CSV en el formato de TransformedZoneData."""
-    zone_name_raw = row["zona"]
-    zone_name_normalized = normalize_zone_name(zone_name_raw)
-
-    # Convertir educación
-    educacion_raw = row.get("educacion")
-    educacion_years = convert_education_to_years(educacion_raw)
-
-    if educacion_years is None:
-        logger.warning(f"Educación no válida en fila, omitiendo: {row.to_dict()}")
-        return None
-
-    # Manejo de negocios
-    negocios_raw = row.get("negocios")
-    if negocios_raw is None or pd.isna(negocios_raw) or str(negocios_raw).strip() == "":
-        negocios = 0
-=======
     """Mayúsculas, sin acentos y espacios colapsados (clave legible para comparar zonas)."""
     if not name or not isinstance(name, str):
         return ""
@@ -199,23 +148,10 @@ def transform_zone(row):
     negocios_raw = row.get("negocios")
     if negocios_raw is None or pd.isna(negocios_raw) or str(negocios_raw).strip() == "":
         negocios = 0.0
->>>>>>> origin/Miguel
     else:
         try:
             negocios = float(negocios_raw)
         except (ValueError, TypeError):
-<<<<<<< HEAD
-            negocios = 0
-
-    return {
-        "zone_code": str(row.get("codigo", row.get("zona_id", row.name))),
-        "zone_name": zone_name_normalized,
-        "population_density": float(row["poblacion"]),
-        "average_income": float(row["ingreso"]),
-        "education_level": educacion_years,
-        "economic_activity_index": float(row.get("actividad_economica", 0.5)),
-        "commercial_presence_index": float(row.get("presencia_comercial", 0.5)),
-=======
             negocios = 0.0
 
     try:
@@ -237,69 +173,19 @@ def transform_zone(row):
         "education_level": int(round(educacion_years)),
         "economic_activity_index": economic_activity_index,
         "commercial_presence_index": commercial_presence_index,
->>>>>>> origin/Miguel
         "other_variables_json": {
             "raw_poblacion": row["poblacion"],
             "raw_ingreso": row["ingreso"],
             "raw_educacion": educacion_raw,
             "raw_zone_name": zone_name_raw,
-<<<<<<< HEAD
-            "negocios": negocios
-        }
-=======
             "negocios": negocios,
             "density_formula": "poblacion/superficie_km2" if "superficie_km2" in row.index else "negocios_por_10k_hab",
         },
->>>>>>> origin/Miguel
     }
 
 
 @router.post("/zones")
 async def sync_zones(db: AsyncSession = Depends(get_db)):
-<<<<<<< HEAD
-    client = IngestionClient()
-
-    # 1. Obtener el último dataset válido o parcial
-    try:
-        datasets = await client.get_datasets(limit=1, validation_status="valid")
-
-        if not datasets:
-            datasets = await client.get_datasets(limit=1, validation_status="partial")
-
-        if not datasets:
-            raise HTTPException(404, "No hay datasets válidos o parcialmente válidos para sincronizar")
-        latest = datasets[0]
-        logger.info(f"Dataset encontrado: ID={latest['id']}, archivo={latest['file_name']}, estado={latest.get('validation_status')}")
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(500, f"Error al obtener dataset: {str(e)}")
-
-    # 2. Descargar archivo
-    try:
-        file_content = await client.get_dataset_file(latest["id"])
-        logger.info(f"Archivo descargado: {len(file_content)} bytes")
-    except Exception as e:
-        raise HTTPException(500, f"Error al descargar archivo: {str(e)}")
-
-    # 3. Leer CSV con orden determinista
-    try:
-        df = pd.read_csv(io.BytesIO(file_content))
-        # Ordenar por índice para garantizar orden determinista
-        df = df.sort_index().reset_index(drop=True)
-        logger.info(f"CSV leído: {len(df)} filas, columnas: {list(df.columns)}")
-    except Exception as e:
-        raise HTTPException(500, f"Error al leer CSV: {str(e)}")
-
-    # 4. Validar columnas requeridas
-    required = ['zona', 'poblacion', 'ingreso', 'educacion']
-    missing = [col for col in required if col not in df.columns]
-    if missing:
-        raise HTTPException(400, f"Columnas faltantes: {missing}")
-
-    # 5. Transformar datos (reproducibilidad garantizada por orden de iteración)
-    zones_data = []
-=======
     """
     Ejecuta la transformación HU-07 sobre el último CSV disponible en ingesta.
 
@@ -354,18 +240,10 @@ async def sync_zones(db: AsyncSession = Depends(get_db)):
         )
 
     zones_by_code = {}
->>>>>>> origin/Miguel
     for idx, row in df.iterrows():
         try:
             transformed = transform_zone(row)
             if transformed is not None:
-<<<<<<< HEAD
-                zones_data.append(transformed)
-            else:
-                logger.info(f"Fila {idx} omitida por datos inválidos")
-        except Exception as e:
-            logger.warning(f"Error en fila {idx}: {e}")
-=======
                 zones_by_code[transformed["zone_code"]] = transformed
             else:
                 logger.info("Fila %s omitida por datos inválidos", idx)
@@ -373,42 +251,22 @@ async def sync_zones(db: AsyncSession = Depends(get_db)):
             logger.warning("Error en fila %s: %s", idx, e)
 
     zones_data = list(zones_by_code.values())
->>>>>>> origin/Miguel
 
     if not zones_data:
         raise HTTPException(400, "No se pudo transformar ninguna fila")
 
-<<<<<<< HEAD
-    # 6. Crear TransformationRun con versión de reglas
-    run = TransformationRun(
-        dataset_load_id=latest["id"],
-        status="completed",
-        rules_applied=RULES_APPLIED,
-        output_version=RULES_VERSION
-=======
     run = TransformationRun(
         dataset_load_id=latest["id"],
         status="running",
         rules_applied=RULES_METADATA,
         output_version=RULES_VERSION,
->>>>>>> origin/Miguel
     )
     db.add(run)
     await db.flush()
 
-<<<<<<< HEAD
-    # 7. Insertar zonas con inmutabilidad (siempre crear nuevos registros vinculados al run)
-    inserted_count = 0
-    skipped_count = 0
-
-    for zone in zones_data:
-        # Crear nuevo registro vinculado a este transformation_run (inmutabilidad)
-        transformed = TransformedZoneData(
-=======
     upserted = 0
     for zone in zones_data:
         stmt = insert(TransformedZoneData).values(
->>>>>>> origin/Miguel
             transformation_run_id=run.id,
             zone_code=zone["zone_code"],
             zone_name=zone["zone_name"],
@@ -417,15 +275,6 @@ async def sync_zones(db: AsyncSession = Depends(get_db)):
             education_level=zone["education_level"],
             economic_activity_index=zone["economic_activity_index"],
             commercial_presence_index=zone["commercial_presence_index"],
-<<<<<<< HEAD
-            other_variables_json=zone["other_variables_json"]
-        )
-        db.add(transformed)
-        inserted_count += 1
-        logger.info(f"Zona insertada: {zone['zone_name']} (run_id={run.id})")
-
-    await db.commit()
-=======
             other_variables_json=zone["other_variables_json"],
         )
         stmt = stmt.on_conflict_do_update(
@@ -448,21 +297,13 @@ async def sync_zones(db: AsyncSession = Depends(get_db)):
     run.finished_at = datetime.now(timezone.utc)
     await db.commit()
     await db.refresh(run)
->>>>>>> origin/Miguel
 
     return {
         "message": "Sincronización completada",
         "dataset_id": latest["id"],
         "transformation_run_id": run.id,
         "zones_processed": len(zones_data),
-<<<<<<< HEAD
-        "inserted": inserted_count,
-        "rules_version": RULES_VERSION,
-        "immutable": True
-    }
-=======
         "upserted": upserted,
         "rules_version": RULES_VERSION,
         "dedupe_by_zone_code": True,
     }
->>>>>>> origin/Miguel

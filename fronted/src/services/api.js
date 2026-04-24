@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-
-// Función para formatear errores como string
-=======
 /**
  * Cliente HTTP del front hacia el **BFF** (`REACT_APP_API_URL`).
  * Incluye carga de CSV, datasets, zonas y disparo HU-07 (`syncZonesTransform`).
@@ -10,7 +5,6 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 /** Normaliza cuerpos de error FastAPI (`detail` string, lista o `message`). */
->>>>>>> origin/Miguel
 const formatError = (data, response) => {
   if (data.detail && Array.isArray(data.detail)) {
     return data.detail.map(err => err.msg).join(', ');
@@ -24,10 +18,7 @@ const formatError = (data, response) => {
   return `Error ${response.status}: ${response.statusText}`;
 };
 
-<<<<<<< HEAD
-=======
 /** Lanza `Error` con mensaje legible si la respuesta no es OK; si no, devuelve JSON parseado. */
->>>>>>> origin/Miguel
 const handleResponse = async (response) => {
   if (!response.ok) {
     let errorMessage = `Error ${response.status}: ${response.statusText}`;
@@ -93,9 +84,6 @@ export const api = {
 
     const response = await fetch(url, { headers });
     return handleResponse(response);
-<<<<<<< HEAD
-  }
-=======
   },
 
   /** HU-07: transformación en ms-transformation (último dataset en ingestion). */
@@ -111,5 +99,4 @@ export const api = {
     });
     return handleResponse(response);
   },
->>>>>>> origin/Miguel
 };

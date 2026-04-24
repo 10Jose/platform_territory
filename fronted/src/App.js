@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 /**
  * Shell de la SPA: `ErrorProvider`, rutas `/login` y `/dashboard`, carga de CSV y HU-07.
  */
 import React, { useState, createContext, useContext } from 'react';
->>>>>>> origin/Miguel
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import Login from './components/Login';
@@ -16,8 +12,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import RankingTable from './components/RankingTable';
 import './styles/auth.css';
 
-<<<<<<< HEAD
-=======
 const ErrorContext = createContext();
 
 export const useError = () => {
@@ -88,7 +82,6 @@ const ErrorProvider = ({ children }) => {
   );
 };
 
->>>>>>> origin/Miguel
 const AuthContainer = () => {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -186,24 +179,6 @@ const Dashboard = () => {
 
 function App() {
   return (
-<<<<<<< HEAD
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<AuthContainer />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-=======
     <ErrorProvider>
       <AuthProvider>
         <BrowserRouter>
@@ -215,7 +190,6 @@ function App() {
         </BrowserRouter>
       </AuthProvider>
     </ErrorProvider>
->>>>>>> origin/Miguel
   );
 }
 

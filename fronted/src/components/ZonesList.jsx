@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 /**
  * Lista zonas desde el BFF (`api.getZones`) y se refresca cuando cambia `refreshTrigger`.
  */
->>>>>>> origin/Miguel
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 

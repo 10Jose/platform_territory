@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 """Operaciones CRUD y login sobre el modelo **User** (capa de servicio del BFF)."""
->>>>>>> origin/Miguel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.domain.models import User
@@ -10,11 +7,8 @@ from typing import Optional
 
 
 class UserService:
-<<<<<<< HEAD
-=======
     """Acceso async a usuarios en ``db-auth``."""
 
->>>>>>> origin/Miguel
     def __init__(self, db: AsyncSession):
         self.db = db
 

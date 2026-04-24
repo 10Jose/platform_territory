@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, HTTPException, Query
-from app.services.transformation_client import TransformationClient
-
-=======
 """Zonas transformadas (proxy a **ms-transformation**) y disparo manual de HU-07."""
 import logging
 from fastapi import APIRouter, HTTPException, Query, Depends
@@ -11,25 +6,18 @@ from app.routers.auth import get_current_user
 from app.domain.models import User
 
 logger = logging.getLogger(__name__)
->>>>>>> origin/Miguel
 router = APIRouter()
 
 @router.get("/")
 async def get_zones(skip: int = Query(0, ge=0),
                     limit: int = Query(100, ge=1, le=500)
 ):
-<<<<<<< HEAD
-=======
     """Listado paginado de zonas desde transformación (sin auth en esta ruta)."""
->>>>>>> origin/Miguel
     try:
         client = TransformationClient()
         result = await client.get_zones(skip, limit)
         return result
     except Exception as e:
-<<<<<<< HEAD
-        raise HTTPException(500, detail=f"Error al obtener zonas: {str(e)}")
-=======
         raise HTTPException(500, detail=f"Error al obtener zonas: {str(e)}")
 
 
@@ -47,4 +35,3 @@ async def sync_zones_transform(current_user: User = Depends(get_current_user)):
         return result
     except Exception as e:
         raise HTTPException(500, detail=f"Error en sincronización / transformación: {str(e)}") from e
->>>>>>> origin/Miguel

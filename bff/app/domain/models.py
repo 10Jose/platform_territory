@@ -1,19 +1,13 @@
-<<<<<<< HEAD
-=======
 """
 Modelo ORM **User** para login y autorización en el BFF (tabla ``users`` en ``db-auth``).
 """
->>>>>>> origin/Miguel
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
 from app.infrastructure.database import Base
 
 class User(Base):
-<<<<<<< HEAD
-=======
     """Cuenta de aplicación: credenciales con hash bcrypt y rol opcional (``user`` / ``admin``)."""
 
->>>>>>> origin/Miguel
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

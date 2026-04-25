@@ -22,6 +22,7 @@ import time
 from contextvars import ContextVar
 from app.infrastructure.database import engine, Base
 from app.domain import models
+from app.routers import pipeline
 
 # Trace ID para logs distribuidos
 trace_id_var: ContextVar[str] = ContextVar("trace_id", default="")
@@ -79,6 +80,7 @@ app.include_router(recommendations.router, prefix="/api/recommendations", tags=[
 app.include_router(configuration.router, prefix="/api/configuration", tags=["Configuration"])
 app.include_router(compare.router, prefix="/api/compare", tags=["Compare"])
 app.include_router(score_router, prefix="/api/score", tags=["Score"])
+app.include_router(pipeline.router, prefix="/api", tags=["Pipeline"])
 
 # HEALTH CHECK COMPLETO
 @app.get("/health")

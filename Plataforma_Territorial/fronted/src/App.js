@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './components/AuthContext';
+import { AuthProvider } from './components/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import FileUploadModern from './components/FileUploadModern';
 import './styles/auth.css';
+import Dashboard from "./pages/Dashboard";
 
 const AuthContainer = () => {
   const [isLogin, setIsLogin] = useState(true);
-
+  
   return (
     <div className="min-h-screen auth-bg">
       <header className="header">
@@ -31,7 +31,7 @@ const AuthContainer = () => {
         )}
       </main>
 
-       <footer className="footer">
+      <footer className="footer">
               <div className="footer-content">
                 <div className="copyright">© 2026 Todos los derechos reservados.</div>
                 <div className="footer-links">
@@ -54,24 +54,6 @@ const AuthContainer = () => {
   );
 };
 
-const Dashboard = () => {
-  const { user, logout } = useAuth();
-
-  return (
-    <div>
-      <div style={{ backgroundColor: '#0d9488', color: 'white', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Plataforma Analítica Territorial</h1>
-        <div>
-          <span>Welcome, {user?.full_name || user?.username}</span>
-          <button onClick={logout} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', color: 'white' }}>Logout</button>
-        </div>
-      </div>
-      <div style={{ padding: '1.5rem' }}>
-        <FileUploadModern />
-      </div>
-    </div>
-  );
-};
 
 function App() {
   return (

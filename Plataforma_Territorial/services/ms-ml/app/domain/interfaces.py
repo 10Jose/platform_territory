@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from datetime import datetime
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 
 
@@ -41,23 +42,19 @@ class IModelTrainer(ABC):
 
     @abstractmethod
     def train(self, features: list, target: list) -> Any:
-        """Entrena un modelo."""
-        pass
+        ...
 
     @abstractmethod
     def predict(self, model: Any, features: list) -> list:
-        """Realiza predicciones."""
-        pass
+        ...
 
     @abstractmethod
     def evaluate(self, model: Any, features: list, target: list) -> Dict[str, float]:
-        """Evalúa el modelo."""
-        pass
+        ...
 
     @abstractmethod
     def get_algorithm_name(self) -> str:
-        """Nombre del algoritmo."""
-        pass
+        ...
 
 
 class IMLRepository(ABC):
@@ -65,30 +62,46 @@ class IMLRepository(ABC):
 
     @abstractmethod
     async def save_experiment(self, experiment_data: Dict) -> int:
-        """Guarda un experimento."""
-        pass
+        ...
 
     @abstractmethod
     async def save_model(self, model_data: Dict) -> int:
-        """Guarda un modelo entrenado."""
-        pass
+        ...
 
     @abstractmethod
-    async def save_prediction(self, prediction_data: Dict) -> None:
-        """Guarda una predicción."""
-        pass
+    async def save_prediction(self, prediction_data: Dict) -> int:
+        ...
 
     @abstractmethod
     async def get_active_model(self) -> Optional[Dict]:
-        """Obtiene el modelo activo."""
-        pass
+        ...
 
     @abstractmethod
     async def get_experiments(self) -> list:
-        """Obtiene todos los experimentos."""
-        pass
+        ...
 
     @abstractmethod
     async def get_predictions(self, zone_code: Optional[str] = None) -> list:
-        """Obtiene predicciones."""
-        pass
+        ...
+
+    @abstractmethod
+    async def get_all_prediction_values(self) -> List[float]:
+        """Lista de prediction_value de todas las predicciones (criterio 4)."""
+        ...
+
+    @abstractmethod
+    async def count_predictions(self) -> int:
+        ...
+
+    @abstractmethod
+    async def count_predictions_by_label(self) -> Dict[str, int]:
+        ...
+
+    @abstractmethod
+    async def get_last_prediction_at(self) -> Optional[datetime]:
+        ...
+
+    @abstractmethod
+    async def delete_old_predictions(self, days: int) -> int:
+        """Elimina predicciones más antiguas que `days`. Devuelve eliminadas."""
+        ...

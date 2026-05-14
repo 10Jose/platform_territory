@@ -287,6 +287,38 @@ export const api = {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     return handleResponse(response);
+  },
+
+  // Criterio 3: predicción batch
+  async predictAllZones() {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/api/ml/predict-all`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    return handleResponse(response);
+  },
+
+  // Criterio 5: estadísticas
+  async getMLStats() {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/api/ml/predictions/stats`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return handleResponse(response);
+  },
+
+  // Criterio 6: limpieza
+  async deleteOldPredictions(days = 30) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/api/ml/predictions/old?days=${days}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return handleResponse(response);
   }
 
 };

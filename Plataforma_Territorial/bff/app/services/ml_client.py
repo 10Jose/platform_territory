@@ -15,15 +15,25 @@ class MLClient(BaseClient):
         return await self.post("/ml/train", config or {})
 
     async def predict_zone(self, zone_code: str) -> Dict:
-        """Predice el potencial de una zona."""
+        """Criterio 1, 2: predice el potencial de una zona (incluye score real)."""
         return await self.get(f"/ml/predict/{zone_code}")
 
+    async def predict_all_zones(self) -> Dict:
+        """Criterio 3: predice todas las zonas."""
+        return await self.post("/ml/predict-all", {})
+
+    async def get_prediction_stats(self) -> Dict:
+        """Criterio 5: estadísticas agregadas de predicciones."""
+        return await self.get("/ml/predictions/stats")
+
+    async def delete_old_predictions(self, days: int = 30) -> Dict:
+        """Criterio 6: limpia predicciones más antiguas que N días."""
+        return await self.delete(f"/ml/predictions/old?days={days}")
+
     async def get_experiments(self) -> List[Dict]:
-        """Obtiene todos los experimentos."""
         return await self.get("/ml/experiments")
 
     async def get_predictions(self, zone_code: Optional[str] = None) -> List[Dict]:
-        """Obtiene predicciones realizadas."""
         if zone_code:
             return await self.get(f"/ml/predictions?zone_code={zone_code}")
         return await self.get("/ml/predictions")
